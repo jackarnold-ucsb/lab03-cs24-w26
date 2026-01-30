@@ -74,7 +74,7 @@ void IntBST::printPreOrder(Node *n) const {
     if(n == nullptr){
         return;
     }
-    cout<<n->info<<endl;
+    cout << n->info << " ";
     printPreOrder(n->left);
     printPreOrder(n->right);
 }
@@ -87,7 +87,7 @@ void IntBST::printInOrder(Node *n) const {
     if(n == nullptr)
         return;
     printInOrder(n->left);
-    cout<<n->info<<endl;
+    cout << n->info << " ";
     printInOrder(n->right);
 }
 
@@ -102,7 +102,7 @@ void IntBST::printPostOrder(Node *n) const {
     }
     printPostOrder(n->left);
     printPostOrder(n->right);
-    cout<<n->info<<endl;
+    cout << n->info << " ";
 }
 
 // return sum of values in tree
@@ -256,7 +256,20 @@ bool IntBST::remove(int value){
     else{
         Node* succ = getSuccessorNode(value);
         int temp = succ->info;
-        remove(succ->info);
+        // unlink successor (succ has no left child)
+        Node* succParent = succ->parent;
+        Node* succChild = succ->right; // may be nullptr
+        if(succParent == nullptr) {
+            root = succChild;
+            if(succChild) succChild->parent = nullptr;
+        } else if (succParent->left == succ) {
+            succParent->left = succChild;
+            if(succChild) succChild->parent = succParent;
+        } else {
+            succParent->right = succChild;
+            if(succChild) succChild->parent = succParent;
+        }
+        delete succ;
         n->info = temp; // Copy successor's value to current node
     }
     return true;
